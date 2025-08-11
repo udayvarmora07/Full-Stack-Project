@@ -32,13 +32,12 @@ jobs:
         steps:
           - name: checkout
             uses: actions/checkout@v4
+          - name: Create kind cluster
+            uses: helm/kind-action@v1
+            with:
+              cluster_name: ci-cluster
           - name: Install Helm
             uses: azure/setup-helm@v4
-          - name: configure kubeconfig
-            uses: azure/k8s-set-context@v4
-            with:
-              method: kubeconfig
-              kubeconfig: ${{secrets.KUBE_CONFIG}}
           - name: deploy helm chart
             run: |
               helm upgrade \
