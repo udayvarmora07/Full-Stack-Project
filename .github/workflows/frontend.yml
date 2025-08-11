@@ -42,7 +42,7 @@ jobs:
           - name: deploy helm chart
             run: |
               helm upgrade \
+              --install \
               frontend-release \
-              kubernetes/frontend \
-              --install
+              ./kubernetes/frontend \
 
