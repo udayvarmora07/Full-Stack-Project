@@ -93,7 +93,7 @@ jobs:
             uses: actions/checkout@v4
           - name: deploy mysql helm chart
             run: |
-                helm upgrade --install frontend-react ./kubernetes/frontend
+                helm upgrade --install mysqldb ./kubernetes/mysqldb
     
     # backend-docker-build:
     #     runs-on: ubuntu-latest
