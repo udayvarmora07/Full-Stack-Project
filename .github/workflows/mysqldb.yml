@@ -7,9 +7,9 @@ jobs:
     mysql-deploy:
         runs-on: aws-ec2-runner
         steps:
-          - name: create docker network
-            run: |
-                docker network create my-network
+        #   - name: create docker network
+        #     run: |
+        #         docker network create my-network
           - name: docker-container
             run: |
               docker run --name mysqldb --network my-network -d mysql:latest
