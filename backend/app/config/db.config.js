@@ -1,5 +1,5 @@
 export default {
-    HOST: "localhost",
+    HOST: "mysqldb",
     USER: "root",
     PASSWORD: "UdayVarmora@2703",
     DB: "tutorial",

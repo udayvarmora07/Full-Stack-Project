@@ -32,9 +32,12 @@ jobs:
         steps:
           - name: checkout
             uses: actions/checkout@v4
+          - name: create docker network
+            run: |
+              docker network create my-network
           - name: docker-container
             run: |
-              docker run --name frontend-react -d -p 8085:80 uday0710/frontend-react:latest
+              docker run --name frontend-react --network my-network -d -p 8085:80 uday0710/frontend-react:latest
           # - name: Create kind cluster
           #   uses: helm/kind-action@v1
           #   with:
