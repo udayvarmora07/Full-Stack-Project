@@ -137,4 +137,4 @@ PersistentVolume:
     path: /mnt/mysql-backup
   persistentVolumeReclaimPolicy: Retain
 
-nodeName: kind-cluster1-worker2
+nodeName: kind-cluster-worker2

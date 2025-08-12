@@ -124,7 +124,7 @@ tolerations: []
 
 affinity: {}
 
-nodeName: kind-cluster1-worker
+nodeName: kind-cluster-worker
 
 myAppConfig:
   MYSQL_DATABASE: tutorial
