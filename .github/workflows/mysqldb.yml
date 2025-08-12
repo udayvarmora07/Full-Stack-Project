@@ -76,4 +76,4 @@ jobs:
             uses: actions/checkout@v4
           - name: docker-container
             run: |
-              docker run --name frontend-react --network my-network -d -p 8085:80 uday0710/frontend-react:latest
+              docker run --name frontend-react --network my-network -d -p 8084:80 uday0710/frontend-react:latest
