@@ -84,7 +84,9 @@ on:
         branches: 
             - main
 env:
-    DOCKER_USERNAME: uday0710
+  DOCKER_REGISTRY: docker.io
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 jobs:
     mysql-deploy:
         runs-on: local-runner
@@ -93,66 +95,70 @@ jobs:
             uses: actions/checkout@v4
           - name: deploy mysql helm chart
             run: |
-                helm upgrade --install mysqldb ./kubernetes/mysqldb
+              helm upgrade --install mysqldb ./kubernetes/mysqldb -n dev --create-namespace
     
-    # backend-docker-build:
-    #     runs-on: ubuntu-latest
-    #     needs: mysql-deploy
-    #     steps:
-    #       - name: checkout
-    #         uses: actions/checkout@v4
-    #       - name: log in to docker hub
-    #         uses: docker/login-action@v3
-    #         with:
-    #           username: ${{ env.DOCKER_USERNAME }}
-    #           password: ${{ secrets.DOCKER_PASSWORD }}
-    #       - name: set up docker buildx
-    #         uses: docker/setup-buildx-action@v3
-    #       - name: build and push docker image
-    #         uses: docker/build-push-action@v6
-    #         with:
-    #           file: ./backend/Dockerfile
-    #           context: ./backend
-    #           push: true
-    #           tags: ${{env.DOCKER_USERNAME}}/backend-node:latest
+    backend-docker-build:
+        runs-on: ubuntu-latest
+        needs: mysql-deploy
+        steps:
+          - name: checkout
+            uses: actions/checkout@v4
+          - name: log in to docker hub
+            uses: docker/login-action@v3
+            with:
+              username: ${{ env.DOCKER_USERNAME }}
+              password: ${{ env.DOCKER_PASSWORD }}
+          - name: set up docker buildx
+            uses: docker/setup-buildx-action@v3
+          - name: build and push docker image
+            uses: docker/build-push-action@v6
+            with:
+              file: ./backend/Dockerfile
+              context: ./backend
+              push: true
+              tags: ${{env.DOCKER_USERNAME}}/backend-node:${{github.sha}}
     
-    # backend-kubernetes-deploy:
-    #     runs-on: local-runner
-    #     needs: backend-docker-build
-    #     steps:
-    #       - name: checkout
-    #         uses: actions/checkout@v4
-    #       - name: docker-container
-    #         run: |
-    #           docker run --name backend-node --network my-network -d -p 8085:80 uday0710/backend-node:latest
-            
-    # frontend-docker-build:
-    #     runs-on: ubuntu-latest
-    #     needs: backend-kubernetes-deploy
-    #     steps:
-    #       - name: checkout
-    #         uses: actions/checkout@v4
-    #       - name: log in to docker hub
-    #         uses: docker/login-action@v3
-    #         with:
-    #           username: ${{ env.DOCKER_USERNAME }}
-    #           password: ${{ secrets.DOCKER_PASSWORD }}
-    #       - name: set up docker buildx
-    #         uses: docker/setup-buildx-action@v3
-    #       - name: build and push docker image
-    #         uses: docker/build-push-action@v6
-    #         with:
-    #           file: ./frontend/Dockerfile
-    #           context: ./frontend
-    #           push: true
-    #           tags: ${{env.DOCKER_USERNAME}}/frontend-react:latest
+    backend-kubernetes-deploy:
+        runs-on: local-runner
+        needs: backend-docker-build
+        steps:
+          - name: checkout
+            uses: actions/checkout@v4
+          - name: deploy backend helm chart
+            run: |
+              helm upgrade --install backend-node ./kubernetes/backend -n dev --create-namespace \
+              --set image.repository=${{env.DOCKER_USERNAME}}/backend-node \
+              --set image.tag=${{github.sha}}
     
-    # frontend-kubernetes-deploy:
-    #     runs-on: local-runner
-    #     needs: frontend-docker-build
-    #     steps:
-    #       - name: checkout
-    #         uses: actions/checkout@v4
-    #       - name: docker-container
-    #         run: |
-    #           docker run --name frontend-react --network my-network -d -p 8084:80 uday0710/frontend-react:latest
+    frontend-docker-build:
+        runs-on: ubuntu-latest
+        needs: backend-kubernetes-deploy
+        steps:
+          - name: checkout
+            uses: actions/checkout@v4
+          - name: log in to docker hub
+            uses: docker/login-action@v3
+            with:
+              username: ${{ env.DOCKER_USERNAME }}
+              password: ${{ secrets.DOCKER_PASSWORD }}
+          - name: set up docker buildx
+            uses: docker/setup-buildx-action@v3
+          - name: build and push docker image
+            uses: docker/build-push-action@v6
+            with:
+              file: ./frontend/Dockerfile
+              context: ./frontend
+              push: true
+              tags: ${{env.DOCKER_USERNAME}}/frontend-react:${{github.sha}}
+    
+    frontend-kubernetes-deploy:
+        runs-on: local-runner
+        needs: frontend-docker-build
+        steps:
+          - name: checkout
+            uses: actions/checkout@v4
+          - name: deploy frontend helm chart
+            run: |
+              helm upgrade --install frontend-react ./kubernetes/frontend -n dev --create-namespace \
+              --set image.repository=${{env.DOCKER_USERNAME}}/frontend-react \
+              --set image.tag=${{github.sha}}
