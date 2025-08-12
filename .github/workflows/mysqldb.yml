@@ -14,7 +14,7 @@ jobs:
                 docker network create my-network
           - name: docker-container
             run: |
-              docker run --name mysqldb --network my-network -d mysql:latest
+              docker run --name mysqldb --network my-network -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
     
     backend-docker-build:
         runs-on: ubuntu-latest
