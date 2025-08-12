@@ -29,7 +29,7 @@ jobs:
               tags: ${{env.DOCKER_USERNAME}}/backend-node:latest
     
     backend-kubernetes-deploy:
-        runs-on: aws-ec2-runner
+        runs-on: local-runner
         needs: backend-docker-build
         steps:
           - name: checkout

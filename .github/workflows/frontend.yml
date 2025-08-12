@@ -28,7 +28,7 @@ jobs:
               tags: ${{env.DOCKER_USERNAME}}/frontend-react:latest
     
     frontend-kubernetes-deploy:
-        runs-on: aws-ec2-runner
+        runs-on: local-runner
         needs: frontend-docker-build
         steps:
           - name: checkout

@@ -5,7 +5,7 @@ on:
             - main
 jobs:
     mysql-deploy:
-        runs-on: aws-ec2-runner
+        runs-on: local-runner
         steps:
         #   - name: create docker network
         #     run: |
