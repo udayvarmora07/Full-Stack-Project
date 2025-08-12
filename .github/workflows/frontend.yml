@@ -32,16 +32,19 @@ jobs:
         steps:
           - name: checkout
             uses: actions/checkout@v4
-          - name: Create kind cluster
-            uses: helm/kind-action@v1
-            with:
-              cluster_name: kind-cluster
-          - name: Install Helm
-            uses: azure/setup-helm@v4
-          - name: deploy helm chart
+          - name: docker-container
             run: |
-              helm upgrade \
-              --install \
-              frontend-release \
-              ./kubernetes/frontend \
+              docker run --name frontend-react -d -p 8085:80 frontend-react:latest
+          # - name: Create kind cluster
+          #   uses: helm/kind-action@v1
+          #   with:
+          #     cluster_name: kind-cluster
+          # - name: Install Helm
+          #   uses: azure/setup-helm@v4
+          # - name: deploy helm chart
+          #   run: |
+          #     helm upgrade \
+          #     --install \
+          #     frontend-release \
+          #     ./kubernetes/frontend \
 
