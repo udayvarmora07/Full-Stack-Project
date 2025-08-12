@@ -134,7 +134,7 @@ function TutorialsList() {
                     </div>
                 ) : (
                     <div>
-                        <p>Please click on a Tutorial...</p>
+                        <p>Hey, Click on a Tutorial...</p>
                     </div>
                 )}
             </div>
