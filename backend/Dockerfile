@@ -4,7 +4,7 @@ WORKDIR /backend
 
 RUN apk update && apk add nginx nodejs npm
 
-COPY nginx/nginx.conf etc/nginx/http.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/http.d/default.conf
 
 COPY package*.json .
 
