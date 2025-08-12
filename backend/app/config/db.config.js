@@ -1,8 +1,8 @@
 export default {
-    HOST: "mysqldb",
-    USER: "root",
-    PASSWORD: "UdayVarmora@2703",
-    DB: "tutorial",
+    HOST: "headless-service",
+    USER: process.env.MYSQL_USER,
+    PASSWORD: process.env.MYSQL_PASSWORD,
+    DB: process.env.MYSQL_DATABASE,
     PORT: 3306,
     dialect: "mysql",
     pool: {
