@@ -1,8 +1,9 @@
-name: ci-cd-pipeline
+name: frontend-workflow
 on: 
-    push:
-        branches: 
-            - main
+    workflow_run:
+      workflows: ["backend-workflow"]
+      types: [completed]
+      branches: [main]
 env:
     DOCKER_USERNAME: uday0710
 jobs:

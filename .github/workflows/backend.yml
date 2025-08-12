@@ -1,13 +1,15 @@
-name: ci-cd-pipeline
+name: backend-workflow
 on: 
-    push:
-        branches: 
-            - main
+    workflow_run: 
+        workflows: ["mysql-workflow"]
+        types: [completed]
+        branches: [main]
 env:
     DOCKER_USERNAME: uday0710
 jobs:
     backend-docker-build:
         runs-on: ubuntu-latest
+
         steps:
           - name: checkout
             uses: actions/checkout@v4
